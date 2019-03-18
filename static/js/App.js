@@ -41,8 +41,8 @@ class Net extends React.Component {
         super(props)
         this.forceTick = this.forceTick.bind(this)
         this.forceLayout = this.forceLayout.bind(this)
-        this.simulation = d3.forceSimulation()
-        //this.state = {nodes: [], edges: []}
+        this.simulation = null //d3.forceSimulation()
+        this.state = {network_rendered: false}
     }
 
     componentDidMount()
@@ -76,7 +76,7 @@ class Net extends React.Component {
     forceTick()
     {
         const node = this.node
-        console.log("forceTick")
+        //console.log("forceTick")
         d3.select(node)
             .selectAll("line.link")
             .data(this.props.edges)
@@ -93,15 +93,28 @@ class Net extends React.Component {
     }
 
     forceLayout(nodes, edges) {
+        if(nodes.length === 0)
+            return
+        console.log(this.simulation === null)
         console.log("force layout")
-        var linkForce = d3.forceLink()
-        this.simulation = d3.forceSimulation()
-            .force("charge", d3.forceManyBody().strength(-60))
-            .force("center", d3.forceCenter().x(250).y(250))
-            .force("link", linkForce)
-            .nodes(nodes)
-            .on('tick', this.forceTick);
-        this.simulation.force("link").links(edges)
+        if(this.simulation === null)
+        {
+            var linkForce = d3.forceLink()
+            this.simulation = d3.forceSimulation()
+                .force("charge", d3.forceManyBody().strength(-60))
+                .force("center", d3.forceCenter().x(250).y(250))
+                .force("link", linkForce)
+                .nodes(nodes)
+                .on('tick', this.forceTick)
+            this.simulation.force("link").links(edges)
+        } else {
+            if(this.simulation.alpha() < 0.1)
+            {
+                this.simulation.alpha(0.1)
+                this.simulation.restart()
+            }
+        }
+
     }
 
 
@@ -109,9 +122,7 @@ class Net extends React.Component {
         console.log("net render")
         const nodes = this.props.nodes
         const edges = this.props.edges
-        console.log(this.props.nodes)
         const max_degree = d3.max(nodes.map(node=>node.degreeCentrality))
-        console.log(max_degree)
         const circleScale = d3.scaleLinear()
                                 .domain([0, max_degree])
                                 .range([5, 15])
@@ -126,6 +137,8 @@ class Net extends React.Component {
                             onClick={() => this.props.onclick(i)}
 
                     />
+                    {/*<text textAnchor={"middle"}*/}
+                    {/*y={15}> {node.id} </text>*/}
                 </g>)
 
         var edgesHtml = edges.map(
@@ -221,7 +234,7 @@ class App extends React.Component {
     transition(node, nextState)
     {
         const nodeRef = this.state.nodes.filter( n => n.id == node)[0]
-        switch (nodeRef.stack) {
+        switch (nodeRef.state) {
             case "inactive":
                 this.state.inactive--
             case "quiescent":
@@ -252,15 +265,15 @@ class App extends React.Component {
             method:"POST",
             body: JSON.stringify({
                 active: this.state.nodes.filter( n => n.state === "active" ).map( n=>n.id),
-                edges: this.state.edges.map( e => [e.source.id, e.target.id] )
+                edges: this.state.edges.map( e => [e.source.id, e.target.id, e.weight] )
         }),
         headers: {
         "Content-type": "application/json; charset=UTF-8"
         }
         }).then(json => {
-
+            console.log(json)
             json.forEach((nList,i) => {
-                setTimeout( () => nList.forEach((n) => this.transition(n[0], n[1])), (i+1)*1000)
+                setTimeout( () => nList.forEach((n) => this.transition(n[0], n[2])), (i+1)*1000)
 
             })
         })
@@ -298,7 +311,6 @@ class App extends React.Component {
                     nodeHash[node.id] = node
                     node.state = "inactive"
                     node.degreeCentrality = getNodeCentrality(edges, node)
-                    //randomizePositions(node, 400,400)
                 })
 
                 edges.forEach(edge => {
@@ -306,7 +318,6 @@ class App extends React.Component {
                     edge.target = nodeHash[edge.target]
                     edge.id = edge.source.id + "-" + edge.target.id
                 })
-                //console.log(nodes)
                 this.setState({nodes: nodes, edges: edges})
                 console.log("network finished")
         })
@@ -356,15 +367,6 @@ class App extends React.Component {
                                      edges={this.state.edges}
                                 />
 
-                            </div>
-                        </div>
-                    </div>
-                    <div className={"col-lg-4 col-md-6 col-sm-12 mb-4"}>
-                        <div className={"card card-small h-100"}>
-                            <div className={"card-header border-bottom"}>
-                                <h6 className={"m-0"}>Trends</h6>
-                            </div>
-                            <div className={"card-body d-flex py-0"}>
                             </div>
                         </div>
                     </div>

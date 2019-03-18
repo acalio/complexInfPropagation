@@ -3,6 +3,8 @@ from flask import (
 )
 from werkzeug.exceptions import abort
 from utilities import network_factory as nf
+from utilities.ncfdlt_model import NCFDLT
+from utilities.diffusion_model import  QuiescentFunction
 
 db = Blueprint('main', __name__)
 
@@ -35,15 +37,11 @@ def getNetwork(n, e):
 def run():
     request_json = request.get_json()
     active_nodes, edges = request_json['active'], request_json['edges']
-    print(active_nodes, edges)
-    result = [
-        [[2,'quiescent'],[3, 'quiescent']],
-        [[4,'inactive'],[5, 'quiescent']],
-        [[10,'active'], [20, 'quiescent']],
-        [[12,'active'],[11, 'quiescent'], [20, 'quiescent']],
-        [[6,'active'], [7, 'quiescent']]
-    ]
-    return jsonify(result)
+    G = nf.convertedgelist2digraph(edges)
+    model = NCFDLT(G, QuiescentFunction())
+    model.set_seed_set(active_nodes)
+    transitions = model.run()
+    return jsonify(transitions)
 
 @db.route('/about', methods=('GET',))
 def about():
