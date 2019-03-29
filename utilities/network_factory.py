@@ -24,17 +24,14 @@ def convert2digraph(G):
 
 
 def convertedgelist2digraph(edgelist):
-    print(edgelist)
     G = nx.DiGraph()
     G.add_weighted_edges_from(edgelist)
     return G
 
 
 def add_LT_weight(G):
-    in_degree = lambda g, v_: g.in_degree(v_)
     for u, v in G.edges:
-        G[u][v]['weight'] = 1 / in_degree(G, v)
-
+        G[u][v]['weight'] = 1 / G.in_degree(v)
 
 def create_network(nodes, edges, model="barabasi"):
     def __barabasi():
@@ -43,5 +40,6 @@ def create_network(nodes, edges, model="barabasi"):
     G = {
         'barabasi': __barabasi
     }[model]()
+    add_LT_weight(G)
 
     return convert2dict(G)

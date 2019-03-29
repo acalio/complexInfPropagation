@@ -73,7 +73,7 @@ class NCFDLT(DiffusionModel):
                         break
             except IndexError:
                 pass
-        print(transitions)
+        #print(transitions)
         return transitions
 
     def __get_quiescent_time(self, v, neg_inf):

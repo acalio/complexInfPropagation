@@ -4,7 +4,9 @@ from flask import (
 from werkzeug.exceptions import abort
 from utilities import network_factory as nf
 from utilities.ncfdlt_model import NCFDLT
-from utilities.diffusion_model import  QuiescentFunction
+from utilities.diffusion_model import QuiescentFunction
+from utilities.npcfdlt_model import NPDLT
+from utilities.spcfdlt_model import SPDLT
 
 db = Blueprint('main', __name__)
 
@@ -31,17 +33,39 @@ def index():
 @db.route('/getNetwork/<int:n>/<int:e>', methods=('GET',))
 def getNetwork(n, e):
     G = nf.create_network(n, e)
+    print(G)
     return jsonify(G)
+
 
 @db.route('/run', methods=('POST',))
 def run():
     request_json = request.get_json()
-    active_nodes, edges = request_json['active'], request_json['edges']
+    active_nodes, edges, model_ = request_json['active'], request_json['edges'], int(request_json['model'])
     G = nf.convertedgelist2digraph(edges)
-    model = NCFDLT(G, QuiescentFunction())
-    model.set_seed_set(active_nodes)
+    # non competitive
+    if model_ == 0:
+        model = NCFDLT(G, QuiescentFunction())
+        model.set_seed_set([u for u, s in active_nodes])
+    else:
+        # semi progressive
+        if model_ == 1:
+            model = SPDLT(G)
+        else:
+            model = NPDLT(G)
+
+        active, activeComp = [], []
+        for v, s in active_nodes:
+            if s == "active":
+                active.append(v)
+            else:
+                activeComp.append(v)
+
+        model.set_seed_set(active, 1)
+        model.set_seed_set(activeComp, 2)
+
     transitions = model.run()
     return jsonify(transitions)
+
 
 @db.route('/about', methods=('GET',))
 def about():
