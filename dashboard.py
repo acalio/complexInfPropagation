@@ -70,3 +70,9 @@ def run():
 @db.route('/about', methods=('GET',))
 def about():
     return render_template('about.html')
+
+
+@db.route('/team', methods=('GET',))
+def team():
+    return render_template('team.html')
+

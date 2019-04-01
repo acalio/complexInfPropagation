@@ -1,12 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <!-- Small Stats Blocks -->
-    About page
+<strong>Abstract</strong>
+To properly capture the complexity of influence propagation phenomena in
+real-world contexts, such as those related to viral marketing and misinformation
+spread, information diffusion models should fulfill a number of requirements.
+These include accounting for several dynamic aspects in the propagation (e.g.,
+latency, time horizon), dealing with multiple cascades of information that might
+occur competitively, accounting for the contingencies that lead a user to change
+her/his adoption of one or alternative information items, and leveraging
+trust/distrust in the users’ relationships and its effect of influence on the users’
+decisions. To the best of our knowledge, no diffusion model unifying all of the
+above requirements has been developed so far. In this work, we address such a
+challenge and propose a novel class of diffusion models, inspired by the classic
+linear threshold model, which are designed to deal with trust-aware,
+non-competitive as well as competitive time-varying propagation scenarios. Our
+theoretical inspection of the proposed models unveils important findings on the
+relations with existing linear threshold models for which properties are known
+about whether monotonicity and submodularity hold for the corresponding
+activation function. We also propose strategies for the selection of the initial
+spreaders of the propagation process, for both non-competitive and competitive
+influence propagation tasks, whose goal is to mimic contexts of misinformation
+spread. Our extensive experimental evaluation, which was conducted on publicly
+available networks and included comparison with competing methods, provides
+evidence on the meaningfulness and uniqueness of our models.
+
+
 {% endblock %}
 
-{% block script %}
-
-    <script type="text/babel" src="{{ url_for('static', filename='js/App.js')}}"></script>
-
-{% endblock %}
