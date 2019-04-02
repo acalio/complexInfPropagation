@@ -1,4 +1,4 @@
-from utilities.diffusion_model import  DiffusionModel
+from api.utilities.diffusion_model import  DiffusionModel
 import random as r
 import heapq as q
 from collections import deque

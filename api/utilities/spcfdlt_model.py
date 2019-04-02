@@ -1,6 +1,5 @@
-from utilities.diffusion_model import DiffusionModel, ThresholdFunction, QuiescentFunction, FixedProbability
+from api.utilities.diffusion_model import DiffusionModel, ThresholdFunction, QuiescentFunction, FixedProbability
 
-from copy import deepcopy
 import random as r
 
 

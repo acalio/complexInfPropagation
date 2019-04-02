@@ -1,5 +1,5 @@
-from utilities.spcfdlt_model import SPDLT
-from utilities.diffusion_model import DiffusionModel, FixedProbability, ThresholdFunction, QuiescentFunction
+from api.utilities.spcfdlt_model import SPDLT
+from api.utilities.diffusion_model import FixedProbability, ThresholdFunction, QuiescentFunction
 
 
 class NPDLT(SPDLT):
