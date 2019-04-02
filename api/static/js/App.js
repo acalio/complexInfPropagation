@@ -51,13 +51,16 @@ class Net extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.nodes.length != this.props.nodes.length)
+    if (prevProps.nodes.length !== this.props.nodes.length)
       this.simulation = null
-    this.forceLayout(this.props.nodes, this.props.edges)
+
+    const recenter = prevProps.width!==this.props.width
+    this.forceLayout(this.props.nodes, this.props.edges, recenter)
+
     d3.selectAll('g.node').call(d3.drag().on('drag', (n) => {
       var e = d3.event
       n.fx = e.x
-      n.fy = n.y
+      n.fy = e.y
       if (this.simulation.alpha() < 0.1) {
         this.simulation.alpha(0.1)
         this.simulation.restart()
@@ -77,15 +80,14 @@ class Net extends React.Component {
     d3.select(node).selectAll("g.node").data(this.props.nodes).attr("class", "node").attr("transform", d => `translate(${d.x},${d.y})`)
   }
 
-  forceLayout(nodes, edges) {
+  forceLayout(nodes, edges, recenter) {
     if (nodes.length === 0)
       return
-      //        console.log("force layout")
-    if (this.simulation === null) {
+    if (this.simulation === null || recenter) {
       var linkForce = d3.forceLink()
       this.simulation = d3.forceSimulation()
           .force("charge", d3.forceManyBody()
-              .strength(-30))
+              .strength(-60))
           .force("center",
               d3.forceCenter()
                   .x(this.props.width/2)
@@ -93,7 +95,6 @@ class Net extends React.Component {
           .force("link", linkForce)
           .nodes(nodes)
           .on('tick', this.forceTick)
-
       this.simulation.force("link").links(edges)
     } else {
       if (this.simulation.alpha() < 0.1) {
@@ -124,7 +125,7 @@ class Net extends React.Component {
     </defs>
 
     //console.log(nodesHtml)
-    return <svg ref={node => this.node = node} width={this.props.width} height={this.props.height}>
+    return <svg ref={node => this.node = node} width={this.props.width*0.9} height={this.props.height}>
       {edgesHtml}
       {nodesHtml}
       {refsHtml}no
@@ -228,7 +229,7 @@ class Trends extends React.Component {
     var yRange = [yMax, 0]
     //console.log(xRange+" "+yRange)
     this.yScale = d3.scaleLinear().domain(yRange).range([0, 420])
-    this.xScale = d3.scaleLinear().domain(xRange).range([0, this.props.width*0.9])
+    this.xScale = d3.scaleLinear().domain(xRange).range([0, this.props.width*0.8])
 
     this.colorScale = d3.scaleOrdinal().domain(["inactive", "quiescent", "active", "comp"]).range(["#75739F", "#41A368", "#FE9922", "#FE0029"])
 
@@ -240,7 +241,7 @@ class Trends extends React.Component {
     })
     console.log(this.props.data)
 
-    return <svg ref={node => this.node = node} height={500} width={this.props.width*0.9}>
+    return <svg ref={node => this.node = node} height={500} width={this.props.width*0.8}>
       {circleHtml}
       <g key={"yaxis"} id={"yaxis"}></g>
       <g key={"xaxis"} id={"xaxis"}></g>
