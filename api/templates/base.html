@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Shards Dashboard Lite - Free Bootstrap Admin Template – DesignRevision</title>
+  <title>Complex Influence Propagation</title>
   <meta name="description" content="A high-quality &amp; free Bootstrap admin dashboard template pack that comes with lots of templates and components.">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
@@ -51,19 +51,19 @@
         <div class="nav-wrapper">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link active" href="{{ url_for('main.index')}}">
+              <a class="nav-link {% block dashboard_active %} {% endblock %}" href="{{ url_for('main.index')}}">
                 <i class="material-icons">dashboard</i>
                 <span>Dashboard</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link " href="{{ url_for('main.about') }}">
+              <a class="nav-link {% block about_active %} {% endblock %} " href="{{ url_for('main.about') }}">
                 <i class="material-icons">info</i>
                 <span>About</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link " href="{{ url_for('main.team')}}">
+              <a class="nav-link {% block team_active %} {% endblock %}" href="{{ url_for('main.team')}}">
                 <i class="material-icons">group</i>
                 <span>Team</span>
               </a>
