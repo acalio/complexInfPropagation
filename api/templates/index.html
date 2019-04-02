@@ -1,4 +1,28 @@
 {% extends 'base.html' %}
+{% block instructions %}
+<div class="color-switcher animated">
+      <h5>Instructions</h5>
+        <div class="social-wrapper">
+            <ul>
+                <li> Generate a Barabasi-Albert random graph. You need to specify the number of nodes and edges </li>
+                <li>Select the Diffusion Model you want to use.</li>
+                <li>Activate a node in favor of one campaign or the competing
+                    one by just clicking over a node.</li>
+                <li>Configure the parameters for the selected diffusion model. </li>
+                <li>Click the Run button to see the diffusion in action</li>
+            </ul>
+
+
+        </div>
+      <div class="close"><i class="material-icons">close</i></div>
+</div>
+
+<div class="color-switcher-toggle">
+      <i class="material-icons">settings</i>
+</div>
+
+{% endblock %}
+
 {%  block dashboard_active %} active {% endblock %}
 {% block script %}
 
