@@ -3,19 +3,27 @@
 {% block content %}
     <!-- Small Stats Blocks -->
     <div class="row">
+
+
+
+
         <div class="col-lg-6 col-sm-12 mb-4">
-            <div class="card card-small card-post card-post--aside card-post--1">
-                <div class="card-post__image" style="background-image: url('images/content-management/5.jpeg');">
-                    <div class="card-post__author d-flex">
-                        <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
-                           style="background-image: url('images/avatars/0.jpg');"></a>
-                    </div>
+            <div class="card card-small mb-4 pt-3">
+            <div class="card-header border-bottom text-center">
+                <div class="mb-3 mx-auto">
+                    <img class="rounded-circle" src="{{ url_for('static', filename='img/at.jpg')}}" alt="User Avatar" width="110">
                 </div>
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <a class="text-fiord-blue" href="#"><strong>Andrea Tagarelli</strong></a>
-                    </h5>
-                    <p class="card-text d-inline-block mb-3">
+                <h4 class="mb-0">Andrea Tagarelli</h4>
+                <span class="text-muted d-block mb-2">Associate</span>
+                <button type="button" onclick="window.location.href='http://people.dimes.unical.it/andreatagarelli/';"
+                        class="mb-2 btn btn-sm btn-pill btn-outline-primary mr-2">
+                    More Info
+                </button>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item p-4">
+                    <strong class="text-muted d-block mb-2">Bio</strong>
+                    <span>
                         Associate professor of
                         computer engineering at the University of Calabria, Italy.
                         From the same university, he received his PhD degree
@@ -29,36 +37,49 @@
                         on data mining topics in premier conferences in the field (ACM SIGKDD,
                         SIAM DM, PAKDD, ECML-PKDD, ECIR). He is co-program-chair of the
                         2018 IEEE/ACM ASONAM Conference
-                    </p>
-                </div>
-            </div>
+                    </span>
+                </li>
+
+                <li class="list-group-item p-4">
+                    <strong class="text-muted d-block mb-2"></strong>
+                </li>
+            </ul>
         </div>
-
-        <div class="col-lg-6 col-sm-12 mb-4">
-            <div class="card card-small card-post card-post--aside card-post--1">
-                <div class="card-post__image" style="background-image: url('images/content-management/6.jpeg');">
-
-                    <div class="card-post__author d-flex">
-                        <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
-                           style="background-image: url('images/avatars/1.jpg');"></a>
-                    </div>
+        </div>
+         <div class="col-lg-6 col-sm-12 mb-4">
+            <div class="card card-small mb-4 pt-3">
+            <div class="card-header border-bottom text-center">
+                <div class="mb-3 mx-auto">
+                    <img class="rounded-circle" src="{{ url_for('static', filename='img/ac.jpg')}}" alt="User Avatar" width="110">
                 </div>
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <a class="text-fiord-blue" href="#"><strong>Antonio Caliò</strong></a>
-                    </h5>
-                    <p class="card-text d-inline-block mb-3">
-                        PhD student in information and communication technologies with
+                <h4 class="mb-0">Antonio Caliò</h4>
+                <span class="text-muted d-block mb-2">Ph. D. Student</span>
+                <button type="button" onclick="window.location.href='https://www.linkedin.com/in/antonio-cali%C3%B2-a38664110/';"
+                        class="mb-2 btn btn-sm btn-pill btn-outline-primary mr-2">
+                    More Info
+                </button>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item p-4">
+                    <strong class="text-muted d-block mb-2">Bio</strong>
+                    <span>
+                       PhD student in information and communication technologies with
                         the DIMES Department, University of Calabria,
                         Italy.
                          His research interests include topics in data mining and machine
                         learning applied to complex networks analysis, such as information
                         diffusion models, influence propagation and related optimisation problems.
-                    </p>
-                    <span class="text-muted">29 February 2019</span>
-                </div>
-            </div>
+                    </span>
+                </li>
+
+                <li class="list-group-item p-4">
+                    <strong class="text-muted d-block mb-2"></strong>
+                </li>
+            </ul>
         </div>
+
+        </div>
+
     </div>
 
 

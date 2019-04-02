@@ -151,29 +151,34 @@ class Trends extends React.Component {
       y: 30
     }
     this.labelMap = {
-      "active": "A.",
-      "quiescent": "Q.",
-      "comp": "A. (comp)"
+      "active": "Active",
+      "quiescent": "Quiescent",
+      "comp": "Act. (competitor)"
     }
+
   }
 
   componentDidMount() {
     console.log("Trends DID Mount")
+    const nodeSelection = d3.select(this.node)
+    nodeSelection.append('text').attr('transform', "translate(250,490)").style('text-anchor', 'middle').text("time-step")
+    nodeSelection.append('text').attr('transform', 'translate(10,250) rotate(-90)').style('text-anchor', 'middle').text("# nodes")
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const nodeSelection = d3.select(this.node)
     nodeSelection.selectAll('path.line').remove()
+
     var xaxis = d3.axisBottom().scale(this.xScale)
     var yaxis = d3.axisLeft().scale(this.yScale)
 
-    d3.select('#xaxis').attr("font-size", 12).attr("transform", "translate(40,250)").call(xaxis)
+    d3.select('#xaxis').attr("font-size", 12).attr("transform", "translate(40,450)").call(xaxis)
 
-    nodeSelection.append('text').attr('transform', "translate(250,290)").style('text-anchor', 'middle').text("time-step")
+
 
     d3.select('#yaxis').attr("transform", "translate(40,30)").call(yaxis)
 
-    nodeSelection.append('text').attr('transform', 'translate(20,150) rotate(-90)').style('text-anchor', 'middle').text("# nodes")
+
 
     this.seriesHash.forEach((v, k, m, i) => {
       var points = xypoints(d3.range(0, v.length), v)
@@ -182,11 +187,17 @@ class Trends extends React.Component {
 
       nodeSelection.append('path').attr("d", line_(points)).attr("class", "line").style("fill", "none").style("stroke", stateScale(k))
     })
-    var keys = [...this.seriesHash.keys()]
-    keys.forEach((k, i) => {
-      nodeSelection.append("circle").attr("cx", 50).attr("cy", 20 * (i + 1)).attr("r", 6).style("fill", stateScale(k))
-      nodeSelection.append("text").attr("x", 60).attr("y", 20 * (i + 1)).text(this.labelMap[k]).style("font-size", "15px").attr("alignment-baseline", "middle")
-    })
+
+    const keys = [...this.seriesHash.keys()]
+    const legendSelection = nodeSelection.selectAll('.legend')
+    if(legendSelection.length !== keys.length){
+        legendSelection.remove()
+        keys.forEach((k, i) => {
+            nodeSelection.append("circle").attr("cx", 50).attr("cy", 20 * (i + 1)).attr("r", 6).style("fill", stateScale(k)).classed('legend',true)
+        nodeSelection.append("text").attr("x", 60).attr("y", 20 * (i + 1)).text(this.labelMap[k]).style("font-size", "15px").attr("alignment-baseline", "middle").classed('legend',true)
+        })
+    }
+
 
   }
 
@@ -216,8 +227,8 @@ class Trends extends React.Component {
     var xRange = [0, xMax]
     var yRange = [yMax, 0]
     //console.log(xRange+" "+yRange)
-    this.yScale = d3.scaleLinear().domain(yRange).range([0, 220])
-    this.xScale = d3.scaleLinear().domain(xRange).range([0, 500])
+    this.yScale = d3.scaleLinear().domain(yRange).range([0, 420])
+    this.xScale = d3.scaleLinear().domain(xRange).range([0, this.props.width*0.9])
 
     this.colorScale = d3.scaleOrdinal().domain(["inactive", "quiescent", "active", "comp"]).range(["#75739F", "#41A368", "#FE9922", "#FE0029"])
 
@@ -229,7 +240,7 @@ class Trends extends React.Component {
     })
     console.log(this.props.data)
 
-    return <svg ref={node => this.node = node} height={300} width={500}>
+    return <svg ref={node => this.node = node} height={500} width={this.props.width*0.9}>
       {circleHtml}
       <g key={"yaxis"} id={"yaxis"}></g>
       <g key={"xaxis"} id={"xaxis"}></g>
@@ -275,8 +286,8 @@ class App extends React.Component {
 
   onResize()
   {
-    const netWidth = document.getElementById("network-container")
-    const trendsWidth = document.getElementById('trends-container')
+    const netWidth = document.getElementById("network-container").clientWidth
+    const trendsWidth = document.getElementById('trends-container').clientWidth
     this.setState({netWidth: netWidth, trendWidth: trendsWidth})
   }
 
@@ -476,41 +487,68 @@ class App extends React.Component {
           <div className={"card card-small"}>
             <div className={"card-header border-bottom"}>
               <h6 className={"m-0"}>Network</h6>
-              <form className={"form-inline"}>
-                <input className={"form-control form-control-sm"} name={"N"} id={"N"} key={"N"} ref={N => this.N = N}
-                       type={"text"} placeholder={"Enter the number of nodes..."}/>
+            </div>
+            <div className="card-body pt-0">
+                <div className="row border-bottom py-2 bg-light">
 
-                <input className={"form-control form-control-sm"} name={'E'} id={'E'} ref={E => this.E = E}
-                       type={"text"} placeholder={"Enter the Number of edges..."}/>
-                <button type={"button"} onClick={this.updateNetwork} className={"btn mb-2"}
-                        disabled={this.state.running} value={"Create Graph"}>
-                  Create Graph
-                </button>
-                <select onChange={this.modelSelection}
-                        className={"form-control custom-select form-control sm-custom-select-sm"}
-                        value={this.state.model}>
-                  <option value={0}>
-                    Non-Competitive
-                  </option>
-                  <option value={1}>
-                    Semi-Progressive
-                  </option>
-                  <option value={2}>
-                    Non-Progressive
-                  </option>
-                </select>
-                <button type={"button"} onClick={this.run} className={"btn btn-accent"} value={"Run"}
-                        disabled={this.state.running}>
-                  Run
-                </button>
-                <button type={"button"} onClick={this.reset} className={"btn mb-2"} disabled={this.state.running}
-                        value={"Reset"}>
-                  Reset
-                </button>
-              </form>
+                    <form>
+                        <div className={"form-row"}>
+                            <div className={"form-group col-md-4"}>
+                                <input className={"form-control form-control-sm"} name={"N"} id={"N"} key={"N"}
+                                       ref={N => this.N = N}
+                                       type={"text"} placeholder={"Enter the number of nodes..."}/>
+                            </div>
+                            <div className={"form-group col-md-4"}>
+                               <input className={"form-control form-control-sm"} name={'E'} id={'E'}
+                                       ref={E => this.E = E}
+                                       type={"text"} placeholder={"Enter the Number of edges..."}/>
+                            </div>
+                             <div className={"form-group col-md-4"}>
+                              <button type={"button"} onClick={this.updateNetwork} className={"btn"}
+                                        disabled={this.state.running} value={"Create Graph"}>
+                                    Create Graph
+                                </button>
+                            </div>
+                        </div>
+                        <div className={"form-row"}>
+                            <div className={"form-group col-md-4"}>
+                              <select onChange={this.modelSelection}
+                                        className={"form-control custom-select form-control sm-custom-select-sm"}
+                                        value={this.state.model}>
+                                    <option value={0}>
+                                        Non-Competitive
+                                    </option>
+                                    <option value={1}>
+                                        Semi-Progressive
+                                    </option>
+                                    <option value={2}>
+                                        Non-Progressive
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div className={"form-group col-md-4"}>
+                               <button type={"button"} onClick={this.run} className={"btn btn-accent"} value={"Run"}
+                                        disabled={this.state.running}>
+                                    Run
+                                </button>
+                            </div>
+
+                            <div className={"form-group col-md-4"}>
+                                 <button type={"button"} onClick={this.reset} className={"btn"}
+                                        disabled={this.state.running}
+                                        value={"Reset"}>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+          </div>
+
             </div>
             <div id={"network-container"} className={"card-body pt-0"}>
-              <Net width={document.getElementById('network-container').clientWidth} height={500} ref={node => this.node = node} onclick={this.toggleActive} nodes={this.state.nodes}
+              <Net width={this.state.netWidth} height={500} ref={node => this.node = node} onclick={this.toggleActive} nodes={this.state.nodes}
                    edges={this.state.edges}/>
 
             </div>
@@ -523,7 +561,7 @@ class App extends React.Component {
             </div>
 
             <div id={"trends-container"} className={"card-body pt-0"}>
-              <Trends ref={node => this.node = node} data={this.state.points}/></div>
+              <Trends ref={node => this.node = node} data={this.state.points} width={this.state.trendWidth}/></div>
           </div>
         </div>
       </div>

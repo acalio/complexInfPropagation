@@ -1,15 +1,3 @@
-{#{% extends 'base.html' %}#}
-{##}
-{#{% block content %}#}
-{##}
-{#{% endblock %}#}
-{##}
-{#{% block script %}#}
-{##}
-{#    <script type="text/babel" src="{{ url_for('static', filename='js/App.js')}}"></script>#}
-{##}
-{#{% endblock %}#}
-
 <!doctype html>
 <html class="no-js h-100" lang="en">
 
@@ -40,10 +28,9 @@
       <aside class="main-sidebar col-12 col-md-3 col-lg-2 px-0">
         <div class="main-navbar">
           <nav class="navbar align-items-stretch navbar-light bg-white flex-md-nowrap border-bottom p-0">
-            <a class="navbar-brand w-100 mr-0" href="#" style="line-height: 25px;">
+            <a class="navbar-brand w-100 mr-0" href="https://www.dimes.unical.it/" style="line-height: 500px;">
               <div class="d-table m-auto">
-                <img id="main-logo" class="d-inline-block align-top mr-1" style="max-width: 25px;" alt="Shards Dashboard">
-                <span class="d-none d-md-inline ml-1">Shards Dashboard</span>
+                <img src="{{ url_for('static', filename='img/logo-dimes.png') }}" id="main-logo" class="d-inline-block align-top mr-1" style="max-width: 220px;" alt="Shards Dashboard">
               </div>
             </a>
             <a class="toggle-sidebar d-sm-inline d-md-none d-lg-none">
@@ -65,19 +52,19 @@
           <ul class="nav flex-column">
             <li class="nav-item">
               <a class="nav-link active" href="{{ url_for('main.index')}}">
-                <i class="material-icons">edit</i>
+                <i class="material-icons">dashboard</i>
                 <span>Dashboard</span>
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link " href="{{ url_for('main.about') }}">
-                <i class="material-icons">vertical_split</i>
+                <i class="material-icons">info</i>
                 <span>About</span>
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link " href="{{ url_for('main.team')}}">
-                <i class="material-icons">note_add</i>
+                <i class="material-icons">group</i>
                 <span>Team</span>
               </a>
             </li>
@@ -111,14 +98,14 @@
 
 
           <footer class="main-footer d-flex p-2 px-3 bg-white border-top">
-            <ul class="nav">
-              <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('main.index') }}">Dashboard</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('main.about') }}">About</a>
-              </li>
-            </ul>
+{#            <ul class="nav">#}
+{#              <li class="nav-item">#}
+{#                <a class="nav-link" href="{{ url_for('main.index') }}">Dashboard</a>#}
+{#              </li>#}
+{#              <li class="nav-item">#}
+{#                <a class="nav-link" href="{{ url_for('main.about') }}">About</a>#}
+{#              </li>#}
+{#            </ul>#}
             <span class="copyright ml-auto my-auto mr-2">Copyright © 2018
               <a href="https://designrevision.com" rel="nofollow">DesignRevision</a>
             </span>
@@ -137,7 +124,7 @@
   <script src="{{ url_for('static', filename="js/shards-dashboards.1.1.0.min.js") }}"></script>
   <script src="{{ url_for('static', filename="js/app-blog-overview.1.1.0.js") }}"></script>
 
-{#        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">#}
+    {%  block script %} {% endblock %}
 
 </body>
 
