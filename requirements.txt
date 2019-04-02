@@ -9,3 +9,4 @@ networkx==2.2
 numpy==1.16.2
 pip==10.0.1
 setuptools==39.1.0
+gunicorn=19.9.0
