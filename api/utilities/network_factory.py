@@ -33,13 +33,19 @@ def add_LT_weight(G):
     for u, v in G.edges:
         G[u][v]['weight'] = 1 / G.in_degree(v)
 
-def create_network(nodes, edges, model="barabasi"):
-    def __barabasi():
-        return convert2digraph(nx.barabasi_albert_graph(nodes, int(edges/nodes)))
 
+def create_network(nodes, edges, model=0):
+    def __barabasi():
+        return convert2digraph(nx.barabasi_albert_graph(nodes, int(edges / nodes)))
+    def __random_graph():
+        max_edges = nodes*(nodes-1)*0.5
+        return convert2digraph(nx.erdos_renyi_graph(nodes, edges/max_edges))
+    def __ws():
+        return convert2digraph(nx.watts_strogatz_graph(nodes, int(edges/nodes), 0.5))
     G = {
-        'barabasi': __barabasi
+        0 : __barabasi,
+        1 : __random_graph,
+        2 : __ws
     }[model]()
     add_LT_weight(G)
-
     return convert2dict(G)

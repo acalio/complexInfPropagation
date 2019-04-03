@@ -6,34 +6,22 @@ from api.utilities.ncfdlt_model import NCFDLT
 from api.utilities.diffusion_model import QuiescentFunction
 from api.utilities.npcfdlt_model import NPDLT
 from api.utilities.spcfdlt_model import SPDLT
+from networkx import NetworkXError
 
 db = Blueprint('main', __name__)
 
-
-@db.route('/', methods=('GET', 'POST'))
+@db.route('/', methods=('GET', ))
 def index():
-    if request.method == 'POST':
-        n = int(request.form['N'])
-        e = int(request.form['E'])
-        error = None
-        try:
-            G = nf.create_network(n, e)
-        except nf.nx.NetworkXError:
-            error = "Wrong input paramater"
-
-        if error is not None:
-            flash(error)
-        else:
-            render_template('index.html', G=jsonify(G))
-
     return render_template('index.html')
 
 
-@db.route('/getNetwork/<int:n>/<int:e>', methods=('GET',))
-def getNetwork(n, e):
-    G = nf.create_network(n, e)
-    print(G)
-    return jsonify(G)
+@db.route('/getNetwork/<int:n>/<int:e>/<int:m>', methods=('GET',))
+def getNetwork(n, e, m):
+    try:
+        G = nf.create_network(n, e, m)
+    except NetworkXError as e:
+        return jsonify(success=0, msg=str(e))
+    return jsonify(success=1, data=G)
 
 
 @db.route('/run', methods=('POST',))

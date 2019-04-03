@@ -2,6 +2,16 @@ var replaceNan = (x) => isNaN(x)
   ? 0
   : x
 
+const alertElement = (m) => {
+  const element = (<div className="alert alert-primary alert-dismissible fade show" role="alert">
+    {m}
+  </div>)
+  ReactDOM.render(element, document.getElementById('alert-block-container'))
+  setTimeout(
+      () => ReactDOM.unmountComponentAtNode(document.getElementById('alert-block-container')),
+      3000)
+}
+
 class StatsBlock extends React.Component {
   constructor(props) {
     super(props);
@@ -51,8 +61,11 @@ class Net extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.nodes.length !== this.props.nodes.length)
+    console.log("component did update")
+    if(this.simulation !==null){
+      this.simulation.stop()
       this.simulation = null
+    }
 
     const recenter = prevProps.width!==this.props.width
     this.forceLayout(this.props.nodes, this.props.edges, recenter)
@@ -69,6 +82,7 @@ class Net extends React.Component {
   }
 
   componentWillUnmount() {
+    console.log("compoenent will unmount")
     this.simulation.stop()
   }
 
@@ -87,7 +101,7 @@ class Net extends React.Component {
       var linkForce = d3.forceLink()
       this.simulation = d3.forceSimulation()
           .force("charge", d3.forceManyBody()
-              .strength(-60))
+              .strength(-70))
           .force("center",
               d3.forceCenter()
                   .x(this.props.width/2)
@@ -119,7 +133,7 @@ class Net extends React.Component {
     var edgesHtml = edges.map((edge) => <line key={edge.id} id={edge.id} className={"link"} markerEnd={"url(#triangle)"} strokeWidth={edge.weight * 2} opacity={0.5} stroke={"#9A8B7A"} fill={"none"}></line>)
 
     var refsHtml = <defs>
-      <marker key={"triangle"} id={"triangle"} refX={12} refY={6} markerUnits={'userSpaceOnUse'} markerWidth={18} markerHeight={12} orient={"auto"}>
+      <marker key={"triangle"} id={"triangle"} refX={12} refY={6} markerUnits={'userSpaceOnUse'} markerWidth={6} markerHeight={9} orient={"auto"}>
         <path d={'M 0 0 12 6 0 12 3 6'}/>
       </marker>
     </defs>
@@ -161,22 +175,18 @@ class Trends extends React.Component {
 
   componentDidMount() {
     console.log("Trends DID Mount")
-    const nodeSelection = d3.select(this.node)
-    nodeSelection.append('text').attr('transform', "translate(250,490)").style('text-anchor', 'middle').text("time-step")
-    nodeSelection.append('text').attr('transform', 'translate(10,250) rotate(-90)').style('text-anchor', 'middle').text("# nodes")
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const nodeSelection = d3.select(this.node)
     nodeSelection.selectAll('path.line').remove()
-
+    if(nodeSelection.selectAll('.axis-label').empty()) {
+      nodeSelection.append('text').attr('transform', `translate(${this.props.width / 2},490)`).style('text-anchor', 'middle').text("time-step").classed('axis-label', true)
+      nodeSelection.append('text').attr('transform', 'translate(10,250) rotate(-90)').style('text-anchor', 'middle').text("# nodes").classed('axis-label', true)
+    }
     var xaxis = d3.axisBottom().scale(this.xScale)
     var yaxis = d3.axisLeft().scale(this.yScale)
-
     d3.select('#xaxis').attr("font-size", 12).attr("transform", "translate(40,450)").call(xaxis)
-
-
-
     d3.select('#yaxis').attr("transform", "translate(40,30)").call(yaxis)
 
 
@@ -262,9 +272,9 @@ class App extends React.Component {
       active: 0,
       activeComp: 0,
       running: false,
-      runnable: false,
       points: [],
       model: 0,
+      modelGraph: 0,
       netWidth: 10,
       trendWidth: 20
 
@@ -277,6 +287,7 @@ class App extends React.Component {
     this.transition = this.transition.bind(this)
     this.reset = this.reset.bind(this)
     this.modelSelection = this.modelSelection.bind(this)
+    this.modelGraphSelection = this.modelGraphSelection.bind(this)
     this.onResize = this.onResize.bind(this)
   }
 
@@ -293,7 +304,7 @@ class App extends React.Component {
   }
 
   toggleActive(i) {
-    console.log("Model: " + this.state.model)
+    if(this.state.running) return
     const node = this.state.nodes[i]
     this.state.points = []
     switch (node.state) {
@@ -335,6 +346,10 @@ class App extends React.Component {
     this.setState({model: event.target.value})
   }
 
+  modelGraphSelection(event) {
+    this.setState({modelGraph: event.target.value})
+  }
+
   transition(node, prevState, nextState) {
     const nodeRef = this.state.nodes.filter(n => n.id == node)[0]
     console.log("node: " + node + " prev:" + prevState + " next: " + nextState)
@@ -372,6 +387,12 @@ class App extends React.Component {
   }
 
   run() {
+
+    if(this.state.N === 0){
+      alertElement("You must first create a network")
+      return
+    }
+
     this.setState({running: true})
     d3.json('/run', {
       method: "POST",
@@ -425,19 +446,24 @@ class App extends React.Component {
   updateNetwork() {
     var n = replaceNan(parseInt(this.N.value))
     var e = replaceNan(parseInt(this.E.value))
-    this.setState({N: n, E: e, inactive: n})
-    this.network(n, e)
-
+    var m = replaceNan(parseInt(this.M.value))
+    if(n>0 && e>0){
+      this.network(n, e, m)
+    }else{
+      alertElement("You must specify the network dimensions")
+    }
   }
 
-  async network(n, e) {
+  async network(n, e, m) {
     console.log("Make call to network")
-    //console.log(this.props.N)
-    //console.log(this.props.E)
-    if (n <= 0 || e <= 0)
-      return
-    d3.json(`/getNetwork/${n}/${e}`).then((data) => {
+    d3.json(`/getNetwork/${n}/${e}/${m}`).then((result) => {
+      console.log(result)
+      if(!result.success){
+        alertElement(result.msg)
+        return
+      }
       //console.log(data)
+      const data = result.data
       var nodes = data.nodes
       var edges = data.links
       //console.log(edges)
@@ -455,7 +481,13 @@ class App extends React.Component {
         edge.target = nodeHash[edge.target]
         edge.id = edge.source.id + "-" + edge.target.id
       })
-      this.setState({nodes: nodes, edges: edges})
+      this.setState({
+        nodes: nodes,
+        edges: edges,
+        N: nodes.length,
+        E: edges.length,
+        inactive: nodes.length
+      })
       console.log("network finished")
     })
   }
@@ -504,6 +536,23 @@ class App extends React.Component {
                                        ref={E => this.E = E}
                                        type={"text"} placeholder={"Enter the Number of edges..."}/>
                             </div>
+                          <div className={"form-group col-md-4"}>
+                              <select onChange={this.graphModelSelection}
+                                        ref={M => this.M = M}
+                                        className={"form-control custom-select form-control sm-custom-select-sm"}
+                                        value={this.state.graphModel}>
+                                    <option value={0}>
+                                        Barabasi
+                                    </option>
+                                    <option value={1}>
+                                        Random Graph
+                                    </option>
+                                    <option value={2}>
+                                      Watts Strogatz
+                                    </option>
+                                </select>
+                            </div>
+
                              <div className={"form-group col-md-4"}>
                               <button type={"button"} onClick={this.updateNetwork} className={"btn"}
                                         disabled={this.state.running} value={"Create Graph"}>
