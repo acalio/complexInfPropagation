@@ -387,9 +387,12 @@ class App extends React.Component {
   }
 
   run() {
-
     if(this.state.N === 0){
       alertElement("You must first create a network")
+      return
+    }
+    if(this.state.nodes.filter(n => n.state === "active" || n.state === "comp").length===0){
+      alertElement("You must first activate at least one node")
       return
     }
 
