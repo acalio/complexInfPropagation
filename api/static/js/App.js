@@ -548,6 +548,7 @@ class App extends React.Component {
                     >
                       <ReactBootstrap.InputGroup className={"form-group col-md-3 col-lg-3"}>
                         <ReactBootstrap.Form.Control
+                            className={"form-control form-control-sm"}
                             type={"text"} placeholder={"Number of nodes..."}
                             name={"N"} id={"N"} key={"N"}
                             ref={N => this.N = N}
