@@ -12,6 +12,10 @@ const alertElement = (m) => {
       3000)
 }
 
+
+
+
+
 class StatsBlock extends React.Component {
   constructor(props) {
     super(props);
@@ -277,7 +281,6 @@ class App extends React.Component {
       modelGraph: 0,
       netWidth: 10,
       trendWidth: 20
-
     }
 
     this.updateNetwork = this.updateNetwork.bind(this)
@@ -289,6 +292,7 @@ class App extends React.Component {
     this.modelSelection = this.modelSelection.bind(this)
     this.modelGraphSelection = this.modelGraphSelection.bind(this)
     this.onResize = this.onResize.bind(this)
+
   }
 
   reset() {
@@ -525,83 +529,193 @@ class App extends React.Component {
               <h6 className={"m-0"}>Network</h6>
             </div>
             <div className="card-body pt-0">
-                <div className="row border-bottom py-2 bg-light">
+              <div className="row border-bottom py-2 bg-light">
+                <form>
+                  <strong className="text-muted d-block mb-2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Network Generator
+                    Settings</strong>
+                  <div className={"form-row col-lg-12 col-md-12"}>
+                    <ReactBootstrap.OverlayTrigger
+                        key={"N-top"}
+                        placement={"top"}
+                        overlay={
+                          <ReactBootstrap.Tooltip
+                              id={`N-tooltip-top`}
 
-                    <form>
-                        <div className={"form-row"}>
-                            <div className={"form-group col-md-4"}>
-                                <input className={"form-control form-control-sm"} name={"N"} id={"N"} key={"N"}
-                                       ref={N => this.N = N}
-                                       type={"text"} placeholder={"Enter the number of nodes..."}/>
-                            </div>
-                            <div className={"form-group col-md-4"}>
-                               <input className={"form-control form-control-sm"} name={'E'} id={'E'}
-                                       ref={E => this.E = E}
-                                       type={"text"} placeholder={"Enter the Number of edges..."}/>
-                            </div>
-                          <div className={"form-group col-md-4"}>
-                              <select onChange={this.graphModelSelection}
-                                        ref={M => this.M = M}
-                                        className={"form-control custom-select form-control sm-custom-select-sm"}
-                                        value={this.state.graphModel}>
-                                    <option value={0}>
-                                        Barabasi
-                                    </option>
-                                    <option value={1}>
-                                        Random Graph
-                                    </option>
-                                    <option value={2}>
-                                      Watts Strogatz
-                                    </option>
-                                </select>
-                            </div>
+                          >
+                            <strong>Set the number of nodes </strong>.
+                          </ReactBootstrap.Tooltip>
+                        }
+                    >
+                      <ReactBootstrap.InputGroup className={"form-group col-md-3 col-lg-3"}>
+                        <ReactBootstrap.Form.Control
+                            type={"text"} placeholder={"Number of nodes..."}
+                            name={"N"} id={"N"} key={"N"}
+                            ref={N => this.N = N}
 
-                             <div className={"form-group col-md-4"}>
-                              <button type={"button"} onClick={this.updateNetwork} className={"btn"}
-                                        disabled={this.state.running} value={"Create Graph"}>
-                                    Create Graph
-                                </button>
-                            </div>
-                        </div>
-                        <div className={"form-row"}>
-                            <div className={"form-group col-md-4"}>
-                              <select onChange={this.modelSelection}
-                                        className={"form-control custom-select form-control sm-custom-select-sm"}
-                                        value={this.state.model}>
-                                    <option value={0}>
-                                        Non-Competitive
-                                    </option>
-                                    <option value={1}>
-                                        Semi-Progressive
-                                    </option>
-                                    <option value={2}>
-                                        Non-Progressive
-                                    </option>
-                                </select>
-                            </div>
+                        />
+                      </ReactBootstrap.InputGroup>
+                    </ReactBootstrap.OverlayTrigger>
 
-                            <div className={"form-group col-md-4"}>
-                               <button type={"button"} onClick={this.run} className={"btn btn-accent"} value={"Run"}
-                                        disabled={this.state.running}>
-                                    Run
-                                </button>
-                            </div>
+                    <ReactBootstrap.OverlayTrigger
+                        key={"E-top"}
+                        placement={"top"}
+                        overlay={
+                          <ReactBootstrap.Tooltip
+                              id={`E-tooltip-top`}
 
-                            <div className={"form-group col-md-4"}>
-                                 <button type={"button"} onClick={this.reset} className={"btn"}
-                                        disabled={this.state.running}
-                                        value={"Reset"}>
-                                    Reset
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                          >
+                            <strong>Set the number of edges </strong>.
+                          </ReactBootstrap.Tooltip>
+                        }
+                    >
+                      <ReactBootstrap.InputGroup className={"form-group col-md-3 col-lg-3"}>
+                        <ReactBootstrap.Form.Control
+                            className={"form-control form-control-sm"}
+                            name={'E'} id={'E'}
+                            ref={E => this.E = E}
+                            type={"text"} placeholder={"Number of edges..."}
+                        />
+                      </ReactBootstrap.InputGroup>
+                    </ReactBootstrap.OverlayTrigger>
 
-          </div>
+                    <ReactBootstrap.OverlayTrigger
+                        key={"M-top"}
+                        placement={"top"}
+                        overlay={
+                          <ReactBootstrap.Tooltip
+                              id={`M-tooltip-top`}
+                          >
+                            <strong>Select the model for generating the network </strong>.
+                          </ReactBootstrap.Tooltip>
+                        }
+                    >
+
+                      <div className={"form-group col-md-3 col-lg-3"}>
+                        <select onChange={this.graphModelSelection}
+                                ref={M => this.M = M}
+                                className={"form-control custom-select form-control sm-custom-select-sm"}
+                                value={this.state.graphModel}>
+                          <option value={0}>
+                            Barabasi
+                          </option>
+                          <option value={1}>
+                            Random Graph
+                          </option>
+                          <option value={2}>
+                            Watts Strogatz
+                          </option>
+                        </select>
+                      </div>
+                    </ReactBootstrap.OverlayTrigger>
+
+
+                    <div className={"form-group col-md-3 col-lg-3"}>
+                      <button type={"button"} onClick={this.updateNetwork} className={"btn"}
+                              disabled={this.state.running} value={"Create Graph"}>
+                        Create Graph
+                      </button>
+                    </div>
+                  </div>
+
+                  <strong className="text-muted d-block mb-2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Model Parameters</strong>
+                  <div className={"form-row col-lg-12 col-md-12"}>
+                    <ReactBootstrap.OverlayTrigger
+                        key={"DM-top"}
+                        placement={"top"}
+                        overlay={
+                          <ReactBootstrap.Tooltip
+                              id={`DM-tooltip-top`}
+                          >
+                            <strong>Select the diffusion model </strong>.
+                          </ReactBootstrap.Tooltip>
+                        }
+                    >
+                      <div className={"form-group col-lg-3 col-md-3"}>
+                        <select onChange={this.modelSelection}
+                                className={"form-control custom-select form-control sm-custom-select-sm"}
+                                value={this.state.model}>
+                          <option value={0}>
+                            Non-Competitive
+                          </option>
+                          <option value={1}>
+                            Semi-Progressive
+                          </option>
+                          <option value={2}>
+                            Non-Progressive
+                          </option>
+                        </select>
+                      </div>
+                    </ReactBootstrap.OverlayTrigger>
+
+                    <ReactBootstrap.OverlayTrigger
+                        key={"bias-top"}
+                        placement={"top"}
+                        overlay={
+                          <ReactBootstrap.Tooltip
+                              id={`bias-tooltip-top`}
+                          >
+                            <strong>
+                              Set the confirmation bias factor.
+                              It must be a number within the interval [0,1]
+                            </strong>.
+                          </ReactBootstrap.Tooltip>
+                        }
+                    >
+                      <div className={"form-group col-md-2 col-lg-2"}>
+                        <input className={"form-control form-control-sm"} name={'confirmation_bias'}
+                               id={'confirmation_bias'}
+                               ref={cb => this.confirmation_bias = cb}
+                               type={"text"} placeholder={"Bias..."}/>
+                      </div>
+                    </ReactBootstrap.OverlayTrigger>
+
+                    <ReactBootstrap.OverlayTrigger
+                        key={"bias-top"}
+                        placement={"top"}
+                        overlay={
+                          <ReactBootstrap.Tooltip
+                              id={`bias-tooltip-top`}
+                          >
+                            <strong>
+                              Set the ``suspicion” coefficient
+                            </strong>.
+                          </ReactBootstrap.Tooltip>
+                        }
+                    >
+
+
+                      <div className={"form-group col-md-2 col-lg-2"}>
+                        <input className={"form-control form-control-sm"} name={'psi'} id={'psi'}
+                               ref={cb => this.psi = cb}
+                               type={"text"} placeholder={"Psi..."}/>
+                      </div>
+                    </ReactBootstrap.OverlayTrigger>
+
+
+                    <div className={"form-group col-lg-2 col-md-2"}>
+                      <button type={"button"} onClick={this.run} className={"btn btn-accent"} value={"Run"}
+                              disabled={this.state.running}>
+                        Run
+                      </button>
+
+                    </div>
+
+                    <div className={"form-group col-lg-2 col-md-2"}>
+                      <button type={"button"} onClick={this.reset} className={"btn"}
+                              disabled={this.state.running} ref={this.attachRef}
+                              value={"Reset"}>
+                        Reset
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+              </div>
 
             </div>
             <div id={"network-container"} className={"card-body pt-0"}>
-              <Net width={this.state.netWidth} height={500} ref={node => this.node = node} onclick={this.toggleActive} nodes={this.state.nodes}
+              <Net width={this.state.netWidth} height={500} ref={node => this.node = node} onclick={this.toggleActive}
+                   nodes={this.state.nodes}
                    edges={this.state.edges}/>
 
             </div>
