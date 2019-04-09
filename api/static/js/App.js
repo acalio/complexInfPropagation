@@ -115,8 +115,8 @@ class Net extends React.Component {
           .on('tick', this.forceTick)
       this.simulation.force("link").links(edges)
     } else {
-      if (this.simulation.alpha() < 0.1) {
-        this.simulation.alpha(0.1)
+      if (this.simulation.alpha() < 0.05) {
+        this.simulation.alpha(0.05)
         this.simulation.restart()
       }
     }
