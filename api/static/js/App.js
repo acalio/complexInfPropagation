@@ -13,9 +13,6 @@ const alertElement = (m) => {
 }
 
 
-
-
-
 class StatsBlock extends React.Component {
   constructor(props) {
     super(props);
@@ -108,7 +105,7 @@ class Net extends React.Component {
               .strength(-70))
           .force("center",
               d3.forceCenter()
-                  .x(this.props.width/2)
+                  .x(this.props.width/2)simulation.al
                   .y(250))
           .force("link", linkForce)
           .nodes(nodes)
