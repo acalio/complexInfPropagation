@@ -102,10 +102,10 @@ class Net extends React.Component {
       var linkForce = d3.forceLink()
       this.simulation = d3.forceSimulation()
           .force("charge", d3.forceManyBody()
-              .strength(-70))
+              .strength(-50))
           .force("center",
               d3.forceCenter()
-                  .x(this.props.width/2)simulation.al
+                  .x(this.props.width/2)
                   .y(250))
           .force("link", linkForce)
           .nodes(nodes)
@@ -124,14 +124,25 @@ class Net extends React.Component {
     //console.log("net render")
     const nodes = this.props.nodes
     const edges = this.props.edges
+
+    //scaler for the cirlcle radius
     const max_degree = d3.max(nodes.map(node => node.degreeCentrality))
-    const circleScale = d3.scaleLinear().domain([0, max_degree]).range([5, 15])
+    const circleScale = d3.scaleLinear().domain([0, max_degree]).range([5, 12])
+
     var nodesHtml = nodes.map((node, i) => <g key={`node_${node.id}`} id={`node_${node.id}`} className={"node"}>
       <circle r={circleScale(node.degreeCentrality)} className={"node"} fill={stateScale(node.state)} stroke={"#9A8B7A"} strokeWidth={1} onClick={() => this.props.onclick(i)}/> {/* <text textAnchor={"middle"} */}
       {/* y={15}> {node.id} </text> */}
     </g>)
 
-    var edgesHtml = edges.map((edge) => <line key={edge.id} id={edge.id} className={"link"} markerEnd={"url(#triangle)"} strokeWidth={edge.weight * 2} opacity={0.5} stroke={"#9A8B7A"} fill={"none"}></line>)
+    var edgesHtml = edges.map((edge) =>
+        <line key={edge.id}
+              id={edge.id}
+              className={"link"}
+              markerEnd={"url(#triangle)"}
+              strokeWidth={edge.weight<0 ? edge.weight *-2 : edge.weight*2}
+              opacity={0.5}
+              stroke={edge.weight<0 ? "#b61a24":"#9A8B7A"}
+              fill={"none"}/>)
 
     var refsHtml = <defs>
       <marker key={"triangle"} id={"triangle"} refX={12} refY={6} markerUnits={'userSpaceOnUse'} markerWidth={6} markerHeight={9} orient={"auto"}>
@@ -143,7 +154,7 @@ class Net extends React.Component {
     return <svg ref={node => this.node = node} width={this.props.width*0.9} height={this.props.height}>
       {edgesHtml}
       {nodesHtml}
-      {refsHtml}no
+      {refsHtml}
     </svg>
   }
 }
@@ -169,7 +180,7 @@ class Trends extends React.Component {
     this.labelMap = {
       "active": "Active",
       "quiescent": "Quiescent",
-      "comp": "Act. (competitor)"
+      "comp": "Active (Bad)",
     }
 
   }
@@ -240,7 +251,7 @@ class Trends extends React.Component {
     var yRange = [yMax, 0]
     //console.log(xRange+" "+yRange)
     this.yScale = d3.scaleLinear().domain(yRange).range([0, 420])
-    this.xScale = d3.scaleLinear().domain(xRange).range([0, this.props.width*0.8])
+    this.xScale = d3.scaleLinear().domain(xRange).range([0, this.props.width*0.7])
 
     this.colorScale = d3.scaleOrdinal().domain(["inactive", "quiescent", "active", "comp"]).range(["#75739F", "#41A368", "#FE9922", "#FE0029"])
 
@@ -252,7 +263,7 @@ class Trends extends React.Component {
     })
     console.log(this.props.data)
 
-    return <svg ref={node => this.node = node} height={500} width={this.props.width*0.8}>
+    return <svg ref={node => this.node = node} height={500} width={this.props.width*0.85}>
       {circleHtml}
       <g key={"yaxis"} id={"yaxis"}></g>
       <g key={"xaxis"} id={"xaxis"}></g>
@@ -403,7 +414,7 @@ class App extends React.Component {
       body: JSON.stringify({
         active: this.state.nodes.filter(n => n.state === "active" || n.state === "comp").map(n => [n.id, n.state]),
         edges: this.state.edges.map(e => [e.source.id, e.target.id, e.weight]),
-        model: this.state.model
+        model: this.state.model,
       }),
       headers: {
         "Content-type": "application/json; charset=UTF-8"
@@ -451,16 +462,34 @@ class App extends React.Component {
     var n = replaceNan(parseInt(this.N.value))
     var e = replaceNan(parseInt(this.E.value))
     var m = replaceNan(parseInt(this.M.value))
-    if(n>0 && e>0){
-      this.network(n, e, m)
-    }else{
-      alertElement("You must specify the network dimensions")
+    var perc =replaceNan(parseInt(this.perc.value))
+    var file = this.file_chooser.files[0]
+    if((n===0 || m === 0) && typeof file!=='undefined')
+    {
+      alertElement("You must either specify the network dimensions or provide a file")
+      return
     }
+    var request = {}
+    if(typeof file!== 'undefined'){
+        const formData = new FormData()
+        formData.append('files', file)
+        request = {
+            method: "POST",
+            body: formData
+        }
+    } else {
+        request = {method:'GET'}
+    }
+    this.network(n, e, m, perc, request)
   }
 
-  async network(n, e, m) {
+
+
+  async network(n, e, m, perc, r) {
     console.log("Make call to network")
-    d3.json(`/getNetwork/${n}/${e}/${m}`).then((result) => {
+    console.log(r)
+    d3.json(`/getNetwork/${n}/${e}/${m}/${perc}`, r)
+        .then((result) => {
       console.log(result)
       if(!result.success){
         alertElement(result.msg)
@@ -511,12 +540,13 @@ class App extends React.Component {
         <StatsBlock statTitle={"Quiescent Users"} value={this.state.quiescent} percentage={this.state.N === 0
             ? 0
             : (this.state.quiescent / this.state.N) * 100}/>
-        <StatsBlock statTitle={"Active Users"} value={this.state.active} percentage={this.state.N === 0
+
+        <StatsBlock statTitle={this.state.model ==0 ? "Active Users" : "Active (Good campaign)"} value={this.state.active} percentage={this.state.N === 0
             ? 0
-            : (this.state.active / this.state.N) * 100}/> {
-          this.state.model > 0 && <StatsBlock statTitle={"Active Users (comp)"} value={this.state.activeComp} percentage={this.state.N == 0
-                ? 0
-                : (this.state.activeComp / this.state.N) * 100}/>
+            : (this.state.active / this.state.N) * 100}/>
+        {
+            this.state.model > 0 &&
+            <StatsBlock statTitle={"Active (Bad campaign)"} value={this.state.activeComp} percentage={this.state.N == 0 ? 0 : (this.state.activeComp / this.state.N) * 100}/>
         }
       </div>
       <div className={"row"}>
@@ -576,6 +606,29 @@ class App extends React.Component {
                       </ReactBootstrap.InputGroup>
                     </ReactBootstrap.OverlayTrigger>
 
+
+                    <ReactBootstrap.OverlayTrigger
+                        key={"perc-top"}
+                        placement={"top"}
+                        overlay={
+                          <ReactBootstrap.Tooltip
+                              id={`perc-tooltip-top`}
+
+                          >
+                            <strong>Set the percentage of negative edges</strong>.
+                          </ReactBootstrap.Tooltip>
+                        }
+                    >
+                      <ReactBootstrap.InputGroup className={"form-group col-md-3 col-lg-3"}>
+                        <ReactBootstrap.Form.Control
+                            className={"form-control form-control-sm"}
+                            name={'perc'} id={'perc'}
+                            ref={E => this.perc = E}
+                            type={"text"} placeholder={"% negative edges..."}
+                        />
+                      </ReactBootstrap.InputGroup>
+                    </ReactBootstrap.OverlayTrigger>
+
                     <ReactBootstrap.OverlayTrigger
                         key={"M-top"}
                         placement={"top"}
@@ -606,8 +659,18 @@ class App extends React.Component {
                       </div>
                     </ReactBootstrap.OverlayTrigger>
 
+                      <div className={"form-group col-md-3 col-lg-3"}>
+                           <ReactBootstrap.Form.Control
+                            className={"form-control form-control-sm"}
+                            type={"file"} placeholder={"Choose file"}
+                            name={"file-chooser"} id={"file-chooser"} key={"file-chooser"}
+                            ref={N => this.file_chooser = N}
 
-                    <div className={"form-group col-md-3 col-lg-3"}>
+                        />
+                      </div>
+
+
+                    <div className={"form-group col-md-3 col-lg-3 custom-file"}>
                       <button type={"button"} onClick={this.updateNetwork} className={"btn"}
                               disabled={this.state.running} value={"Create Graph"}>
                         Create Graph
@@ -668,14 +731,14 @@ class App extends React.Component {
                     </ReactBootstrap.OverlayTrigger>
 
                     <ReactBootstrap.OverlayTrigger
-                        key={"bias-top"}
+                        key={"suspicion-top"}
                         placement={"top"}
                         overlay={
                           <ReactBootstrap.Tooltip
-                              id={`bias-tooltip-top`}
+                              id={`suspicion-tooltip-top`}
                           >
                             <strong>
-                              Set the ``suspicion” coefficient
+                              Set the &ldquo;suspicion&rdquo; coefficient
                             </strong>.
                           </ReactBootstrap.Tooltip>
                         }

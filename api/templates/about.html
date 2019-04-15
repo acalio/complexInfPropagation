@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
-{%  block about_active %} active {% endblock %}
+{% block about_active %} active {% endblock %}
 
 {% block content %}
     <div class="row">
-              <div class="col-lg-12">
-                <div class="card card-small card-post mb-4">
-                  <div class="card-body">
+        <div class="col-lg-12">
+            <div class="card card-small card-post mb-4">
+                <div class="card-body">
                     <h5 class="card-title">Abstract</h5>
                     <p class="card-text text-muted">
                         To properly capture the complexity of influence propagation phenomena in
                         real-world contexts, such as those related to viral marketing and misinformation
-                        spread, information diffusion models should fulfill a number of requirements.
+                        spread, information diffusion models should fulfill a number of requirements. <br>
+
                         These include accounting for several dynamic aspects in the propagation (e.g.,
                         latency, time horizon), dealing with multiple cascades of information that might
                         occur competitively, accounting for the contingencies that lead a user to change
@@ -20,7 +21,8 @@
                         above requirements has been developed so far. In this work, we address such a
                         challenge and propose a novel class of diffusion models, inspired by the classic
                         linear threshold model, which are designed to deal with trust-aware,
-                        non-competitive as well as competitive time-varying propagation scenarios. Our
+                        non-competitive as well as competitive time-varying propagation scenarios. <br>
+                        Our
                         theoretical inspection of the proposed models unveils important findings on the
                         relations with existing linear threshold models for which properties are known
                         about whether monotonicity and submodularity hold for the corresponding
@@ -30,33 +32,99 @@
                         spread. Our extensive experimental evaluation, which was conducted on publicly
                         available networks and included comparison with competing methods, provides
                         evidence on the meaningfulness and uniqueness of our models.
+
+                    <h5 class="card-title">Friend-Foe Dynamic Linear Threshold Models</h5>
+                    <div class="text-muted">
+                        Here we introduce our proposed class of models, which is comprised of: the Non-
+                        Competitive F 2 DLT (nC-F 2 DLT ), the Semi-Progressive F 2 DLT (spC-F 2 DLT ),
+                        and the Non-Progressive F 2 DLT (npC-F 2 DLT). <br>
+
+                        All of the models share some commons aspects:
+                        <ul>
+                            <li>
+                                Distinction between trusted connections (positive links) and distrusted connection
+                                (negative links)
+                            </li>
+                            <li><strong>Dynamic Behavior</strong>
+                                via the definition of an <strong>Activation-threshold function</strong> and
+                                a <strong>Quiescence function</strong>.<br>
+                                The first one
+                                models the tendency of users to increase their belief towards a piece of information
+                                which propagates along a network; while the second quantifies the latency in the
+                                propagation
+                                as function of the number of distrusted neighbors involved in the propagation process.
+                            </li>
+                        </ul>
+
+                        <h6 class="card-title">Non-Competitive (nC-F 2 DLT)</h6>
+                        The first model, nC-F2-DLT refers to the non-competing environment, i.e.,
+                        a scenario where there is only a single campaign propagating along the network. <br>
+                        Each node in the network will go through the following life-cycle:
+                        <div class="card-post__image"
+                             style="background-image: url('/static/img/noncom.png');background-size:40% 80%;"></div>
+                    </div>
+
+                    <h6 class="card-title">Semi-Progressive (spC-F 2 DLT)</h6>
+                    The second model adheres the scenario where two competing campaigns are spreading simultaneously
+                    along
+                    the network. We will refer to these campaigns as the &ldquo; Good &rdquo; and the
+                    &ldquo; Bad &rdquo; campaign. <br>
+                    In this context, a node can be either active in favor of the good campaign or the other. <br>
+                    Also, once a node becomes active it is allowed to switch its activation state from one campaign to
+                    the
+                    opposite one but it is not allowed to turn back into the inactive state. <br>
+                    The following figure represents the life-cycle of a node with respect to the Semi-Progressive model.
+
+                    <div class="card-post__image"
+                         style="background-image: url('/static/img/SEMI.png');background-size:23% 90%;"></div>
+
+
+                    <h6 class="card-title">Non-Progressive (npC-F 2 DLT)</h6>
+                    This model refers to the same competing environment as the previous diffusion model. <br>
+                    However, unlike the Semi-Progressive model, in this case a node is also allowed to
+                    turn back to the inactive state if, after its activation, none of the competing campign
+                    is still able to maintain its activation, i.e., neither one of the two campaigns is able
+                    to exert an amount of influence greater or equal to the node's activation threshold. <br>
+
+                    The following figure represents the life-cycle of a node with respect to the Non-Progressive Mode.
+
+
+                    <div class="card-post__image"
+                         style="background-image: url('/static/img/non.png');background-size:25% 80%;"></div>
                     </p>
-                  </div>
-                  <div class="card-footer border-top d-flex">
-                    <div class="card-post__author d-flex">
-                      <a href="#" class="card-post__author-avatar card-post__author-avatar--small" style="background-image: url('/static/img/ac.jpg');"></a>
-                      <div class="d-flex flex-column justify-content-center ml-3">
-                        <span class="card-post__author-name">Antonio Caliò</span>
-                      </div>
-                    </div>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <div class="card-post__author d-flex">
-                      <a href="#" class="card-post__author-avatar card-post__author-avatar--small" style="background-image: url('/static/img/at.jpg');"></a>
-                      <div class="d-flex flex-column justify-content-center ml-3">
-                        <span class="card-post__author-name">Andrea Tagarelli</span>
-                      </div>
-                    </div>
-
-
-
-                      <div class="my-auto ml-auto">
-                      <a class="btn btn-sm btn-white" href="#">
-                        <i class="far fa-bookmark mr-1"></i> Published in Applied Network Science</a>
-                    </div>
-
-                  </div>
                 </div>
-              </div>
+
+
             </div>
+            <div class="card-footer border-top d-flex">
+                <div class="card-post__author d-flex">
+                    <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
+                       style="background-image: url('/static/img/ac.jpg');"></a>
+                    <div class="d-flex flex-column justify-content-center ml-3">
+                        <span class="card-post__author-name">Antonio Caliò</span>
+                    </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="card-post__author d-flex">
+                    <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
+                       style="background-image: url('/static/img/at.jpg');"></a>
+                    <div class="d-flex flex-column justify-content-center ml-3">
+                        <span class="card-post__author-name">Andrea Tagarelli</span>
+                    </div>
+                </div>
+
+
+                <div class="my-auto ml-auto">
+                    <a class="btn btn-sm btn-white" href="https://doi.org/10.1007/s41109-019-0124-5">
+                        <i class="far fa-bookmark mr-1"></i>Applied Network Science</a>
+                    <a class="btn btn-sm btn-white" href="https://ieeexplore.ieee.org/document/8455901">
+                        <i class="far fa-bookmark mr-1"></i> TrustCom/BigDataSE 2018</a>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    </div>
 {% endblock %}
 
