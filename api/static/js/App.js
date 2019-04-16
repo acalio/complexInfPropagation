@@ -90,7 +90,12 @@ class Net extends React.Component {
   forceTick() {
     const node = this.node
     //console.log("forceTick")
-    d3.select(node).selectAll("line.link").data(this.props.edges).attr("x1", d => d.source.x).attr("x2", d => d.target.x).attr("y1", d => d.source.y).attr("y2", d => d.target.y)
+    d3.select(node).selectAll("line.link")
+        .data(this.props.edges)
+        .attr("x1", d => d.source.x)
+        .attr("x2", d => d.target.x)
+        .attr("y1", d => d.source.y)
+        .attr("y2", d => d.target.y)
 
     d3.select(node).selectAll("g.node").data(this.props.nodes).attr("class", "node").attr("transform", d => `translate(${d.x},${d.y})`)
   }
@@ -102,7 +107,7 @@ class Net extends React.Component {
       var linkForce = d3.forceLink()
       this.simulation = d3.forceSimulation()
           .force("charge", d3.forceManyBody()
-              .strength(-50))
+              .strength(-30))
           .force("center",
               d3.forceCenter()
                   .x(this.props.width/2)
@@ -665,7 +670,6 @@ class App extends React.Component {
                             type={"file"} placeholder={"Choose file"}
                             name={"file-chooser"} id={"file-chooser"} key={"file-chooser"}
                             ref={N => this.file_chooser = N}
-
                         />
                       </div>
 
