@@ -33,18 +33,20 @@
                         available networks and included comparison with competing methods, provides
                         evidence on the meaningfulness and uniqueness of our models.
 
-                        <br><br>
-                        This work has been published in:
-                        <ul class="text-muted">
-                        <li> 17th IEEE International Conference On Trust, Security And Privacy In Computing And Communications / 12th IEEE International
-                            Conference On Big Data Science And Engineering, TrustCom/BigDataSE 2018,IEEE.</li>
-                        <li>Applied Network Science, 2018</li>
-                        </ul>
+                        <br>
+                        <h6 class="card-title">Publications</h6>
+                        <div>
+                            <ul class="text-muted">
+                                <li> <strong>Trust-Based Dynamic Linear Threshold Models for Non-competitive and Competitive Influence Propagation</strong> <br> TrustCom/BigDataSE 2018</li>
+                                <li> <strong>Complex Influence Propagation based on Trust-aware Dynamic Linear Threshold Models</strong> <br> Applied Network Science 2018</li>
+                            </ul>
+                        </div>
+
                         <h5 class="card-title">Friend-Foe Dynamic Linear Threshold Models</h5>
                          <div class="text-muted">
                             Here we introduce our proposed class of models, which is comprised of: the Non-
-                            Competitive F 2 DLT (nC-F 2 DLT ), the Semi-Progressive F 2 DLT (spC-F 2 DLT ),
-                            and the Non-Progressive F 2 DLT (npC-F 2 DLT). <br>
+                            Competitive $F^2DLT$ ($nC$-$F^2DLT$), the Semi-Progressive $F^2DLT$ ($spC$-$F^2DLT$ ),
+                            and the Non-Progressive $F^2DLT$ ($npC$-$F^2DLT$). <br>
 
                             All of the models share some commons aspects:
                             <ul class="text-muted">
@@ -63,15 +65,15 @@
                                 </li>
                             </ul>
 
-                            <h6 class="card-title">Non-Competitive (nC-F 2 DLT)</h6>
-                            The first model, nC-F2-DLT refers to the non-competing environment, i.e.,
+                            <h6 class="card-title">Non-Competitive ($nC$-$F^2DLT$)</h6>
+                            The first model, $nC$-$F^2DLT$ refers to the non-competing environment, i.e.,
                             a scenario where there is only a single campaign propagating along the network. <br>
                             Each node in the network will go through the following life-cycle:
                             <div class="card-post__image"
-                                 style="background-image: url('/static/img/noncom.svg');background-size: 50% 60%;"></div>
+                                 style="background-image: url('/static/img/noncom.svg');background-size: 400px 150px; background-position: center"></div>
                         </div>
 
-                        <h6 class="card-title">Semi-Progressive (spC-F 2 DLT)</h6>
+                        <h6 class="card-title">Semi-Progressive ($spC$-$F^2DLT$)</h6>
                         <div class="text-muted">
                             The second model adheres the scenario where two competing campaigns are spreading simultaneously
                             along
@@ -84,10 +86,10 @@
                             The following figure represents the life-cycle of a node with respect to the Semi-Progressive model.
 
                         <div class="card-post__image"
-                             style="background-image: url('/static/img/semi.svg');background-size:80% 80%;"></div>
+                             style="background-image: url('/static/img/semi.svg');background-size:300px 150px; background-position: center""></div>
                         </div>
 
-                      <h6 class="card-title">Non-Progressive (npC-F 2 DLT)</h6>
+                      <h6 class="card-title">Non-Progressive ($npC$-$F^2DLT$)</h6>
                         <div class="text-muted">
                         This model refers to the same competing environment as the previous diffusion model. <br>
                         However, unlike the Semi-Progressive model, in this case a node is also allowed to
@@ -99,7 +101,7 @@
 
 
                         <div class="card-post__image"
-                             style="background-image: url('/static/img/non.svg');background-size:80% 80%;"></div>
+                             style="background-image: url('/static/img/non.svg');background-size:300px 150px; background-position: center"></div>
                         </div>
                     </p>
                 </div>
@@ -137,4 +139,16 @@
     </div>
     </div>
 {% endblock %}
+
+{%  block script %}
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+      });
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+{% endblock %}
+
 

@@ -526,7 +526,6 @@ class App extends React.Component {
         E: edges.length,
         inactive: nodes.length
       })
-      console.log("network finished")
     })
   }
 
