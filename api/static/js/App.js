@@ -107,7 +107,7 @@ class Net extends React.Component {
       var linkForce = d3.forceLink()
       this.simulation = d3.forceSimulation()
           .force("charge", d3.forceManyBody()
-              .strength(-30))
+              .strength(-60))
           .force("center",
               d3.forceCenter()
                   .x(this.props.width/2)
