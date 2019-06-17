@@ -310,7 +310,7 @@ class App extends React.Component {
 
   reset() {
     this.state.nodes.forEach(n => n.state = "inactive")
-    this.setState({nodes: this.state.nodes, inactive: this.state.N, quiescent: 0, active: 0, points: []})
+    this.setState({nodes: this.state.nodes, inactive: this.state.N, quiescent: 0, active: 0, activeComp:0, points: []})
   }
 
   onResize()
