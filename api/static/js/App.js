@@ -469,7 +469,7 @@ class App extends React.Component {
     var m = replaceNan(parseInt(this.M.value))
     var perc =replaceNan(parseInt(this.perc.value))
     var file = this.file_chooser.files[0]
-    if((n===0 || m === 0) && typeof file!=='undefined')
+    if((n===0 || m === 0) && typeof file==='undefined')
     {
       alertElement("You must either specify the network dimensions or provide a file")
       return
@@ -651,7 +651,7 @@ class App extends React.Component {
                                 className={"form-control custom-select form-control sm-custom-select-sm"}
                                 value={this.state.graphModel}>
                           <option value={0}>
-                            Barabasi
+                            Barabási
                           </option>
                           <option value={1}>
                             Random Graph

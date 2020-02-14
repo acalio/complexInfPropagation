@@ -59,5 +59,6 @@ def create_network(nodes, edges, model=0, perc=0):
 
 
 def read_file(file_as_string):
-    G = nx.read_weighted_edgelist(BytesIO(file_as_string), create_using=nx.DiGraph(), nodetype=int)
+    G = nx.read_weighted_edgelist(BytesIO(file_as_string), create_using=nx.DiGraph(), nodetype=str)
+    print(nx.number_of_nodes(G))
     return convert2dict(G)
