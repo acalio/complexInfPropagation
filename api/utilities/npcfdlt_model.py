@@ -23,8 +23,9 @@ class NPDLT(SPDLT):
             transitions += [[]]
             trans_list = transitions[-1]
             for v in self.g:
+
                 previous_state = self.activation_state[v]
-                if previous_state == SPDLT.QUIESCENT:
+                if previous_state == SPDLT.QUIESCENT or v in self.seed:
                     continue
 
                 inf_first, inf_second = self.get_influence(v)
@@ -58,26 +59,29 @@ class NPDLT(SPDLT):
                         #switch
                         switch_nodes += [(v, previous_state, next_state)]
                         switch += 1
+
                     trans_list.append(self.transition(v, previous_state, next_state))
+
             # eseguo gli switch
             for u, p, n in switch_nodes:
-                self.active[p].remove(v)
-                self.active[n].add(v)
-                self.activation_state[v] = n
+                self.active[p].remove(u)
+                self.active[n].add(u)
+                self.activation_state[u] = n
                 activation_time[u] = t + 1
 
             # quiescent -> active
             if quiescent_nodes:
-                t = quiescent_nodes.keys()[0]
+                t = min(quiescent_nodes.keys())
             else:
                 break
+
             for u, c in quiescent_nodes[t]:
                 self.activation_state[u] = c
                 self.active[c].add(u)
                 activation_time[u] = t
 
 
-            # active -> inactive131827
+            # active -> inactive
             for u, c in deactive:
                 self.active[c].remove(u)
                 self.activation_state[u] = SPDLT.INACTIVE

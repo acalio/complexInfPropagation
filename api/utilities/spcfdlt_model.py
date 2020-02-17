@@ -42,10 +42,10 @@ class SPDLT(DiffusionModel):
         if campaign > 2:
             raise RuntimeError
         for v in seeds:
-            print(self.active)
             self.active[campaign].add(v)
             self.activation_state[v] = campaign
             self.seed.add(v)
+        print(self.active)
 
     def get_active_nodes(self, campaign=1):
         if campaign > 2:
@@ -106,7 +106,7 @@ class SPDLT(DiffusionModel):
                         # switch
                         switch += 1
                         switch_nodes += [(v, previous_state, next_state)]
-                        trans_list.append(self.transition(v, previous_state, next_state))
+                    trans_list.append(self.transition(v, previous_state, next_state))
 
             # eseguo gli switch
             for u, p, n in switch_nodes:

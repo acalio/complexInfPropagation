@@ -469,7 +469,7 @@ class App extends React.Component {
     var m = replaceNan(parseInt(this.M.value))
     var perc =replaceNan(parseInt(this.perc.value))
     var file = this.file_chooser.files[0]
-    if((n===0 || m === 0) && typeof file==='undefined')
+    if((n===0 || e === 0) && typeof file==='undefined')
     {
       alertElement("You must either specify the network dimensions or provide a file")
       return
