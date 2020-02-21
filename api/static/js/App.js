@@ -1,7 +1,18 @@
-var replaceNan = (x) => isNaN(x)
-  ? 0
-  : x
+/**
+ * Utility function that replace a nan
+ * with a zero
+ *
+ * @param x
+ * @returns {*}
+ */
+var replaceNan = (x) => isNaN(x) ? 0 : x
 
+
+/**
+ * Show a pop-up element on top of the page that
+ * disappears after 6 seconds
+ * @param m
+ */
 const alertElement = (m) => {
   const element = (<div className="alert alert-primary alert-dismissible fade show" role="alert">
     {m}
@@ -9,10 +20,42 @@ const alertElement = (m) => {
   ReactDOM.render(element, document.getElementById('alert-block-container'))
   setTimeout(
       () => ReactDOM.unmountComponentAtNode(document.getElementById('alert-block-container')),
-      3000)
+      6000)
 }
 
 
+/**
+ * Colors to represent the different state of each node
+ */
+const stateScale = d3.scaleOrdinal().domain(["inactive", "quiescent", "active", "comp"]).range(["#75739F", "#41A368", "#FE9922", "#FE0029"])
+
+
+/**
+ *  Create an array of
+ *  objects. Each object
+ *  represent a corrdinate <x,y>
+ *
+ */
+const xypoints = (x_, y_) => {
+  var points = []
+  for (var i = 0; i < x_.length; i++)
+    points.push({x: x_[i], y: y_[i]})
+  return points
+}
+
+
+/**
+ * This component swohs a particular
+ * statistics related to the propagation process.
+ * It consists of a counter and a percentage w.r.t. the
+ * number of nodes in the network
+ *
+ * Propertis:
+ *  statTitle -> name of the quantity to be measured
+ *  value -> current value of the measure
+ *  percentage -> percentage w.r.t. #nodes in the network
+ *
+ */
 class StatsBlock extends React.Component {
   constructor(props) {
     super(props);
@@ -43,8 +86,14 @@ class StatsBlock extends React.Component {
   }
 }
 
-const stateScale = d3.scaleOrdinal().domain(["inactive", "quiescent", "active", "comp"]).range(["#75739F", "#41A368", "#FE9922", "#FE0029"])
-
+/**
+ * Component dedicated to the display
+ * of the network. It is responsible
+ * to draw the network  accordingly to
+ * the forceLayour of d3.js. Also
+ * it is in charge of handling the transitions
+ * of the propagation process.
+ */
 class Net extends React.Component {
   constructor(props) {
     super(props)
@@ -57,12 +106,17 @@ class Net extends React.Component {
     }
   }
 
-  componentDidMount() {
-    console.log("compoentDidMount")
-  }
+  componentDidMount() {/* console.log("compoentDidMount") */}
 
+  /**
+   * When a change in the component properties
+   * is detected the simulation (forceLayout) is
+   * is restarted. This happen each
+   * tie a node is dragged or when the window is
+   * resized
+  */
   componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log("component did update")
+    //console.log("component did update")
     if(this.simulation !==null){
       this.simulation.stop()
       this.simulation = null
@@ -82,10 +136,15 @@ class Net extends React.Component {
     }))
   }
 
+  /**
+   * The simulation stop when
+   * the component is unmount
+   */
   componentWillUnmount() {
-    console.log("compoenent will unmount")
     this.simulation.stop()
   }
+
+
 
   forceTick() {
     const node = this.node
@@ -100,6 +159,10 @@ class Net extends React.Component {
     d3.select(node).selectAll("g.node").data(this.props.nodes).attr("class", "node").attr("transform", d => `translate(${d.x},${d.y})`)
   }
 
+
+  /**
+   * Function for the network rendering
+  */
   forceLayout(nodes, edges, recenter) {
     if (nodes.length === 0)
       return
@@ -125,6 +188,9 @@ class Net extends React.Component {
 
   }
 
+  /**
+   * React Function: render
+   */
   render() {
     //console.log("net render")
     const nodes = this.props.nodes
@@ -164,13 +230,12 @@ class Net extends React.Component {
   }
 }
 
-const xypoints = (x_, y_) => {
-  var points = []
-  for (var i = 0; i < x_.length; i++)
-    points.push({x: x_[i], y: y_[i]})
-  return points
-}
 
+/**
+ * This component shows the
+ * line-plot of the propagation
+ * process
+ */
 class Trends extends React.Component {
   constructor(props) {
     super(props)
@@ -190,9 +255,8 @@ class Trends extends React.Component {
 
   }
 
-  componentDidMount() {
-    console.log("Trends DID Mount")
-  }
+  componentDidMount() {/*console.log("Trends DID Mount")*/}
+
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const nodeSelection = d3.select(this.node)
@@ -425,9 +489,8 @@ class App extends React.Component {
         "Content-type": "application/json; charset=UTF-8"
       }
     }).then(json => {
-      console.log(json)
       json.forEach((nList, i) => {
-        if (nList.length === 0) //end of the simulation
+        if (nList.length === 0 || i === json.length-1 ) //end of the simulation
           setTimeout(() => this.setState({running: false}), (i + 1) * 1000)
         else
           setTimeout(() => {

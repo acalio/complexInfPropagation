@@ -51,7 +51,7 @@ class NPDLT(SPDLT):
                         if int(t+q) not in quiescent_nodes:
                             quiescent_nodes[int(t+q)] = []
                         quiescent_nodes[int(t+q)] += [(v, next_state)]
-
+                        trans_list.append(self.transition(v, previous_state, SPDLT.QUIESCENT))
                     elif next_state == SPDLT.INACTIVE:
                         # disatttivazione
                         deactive += [(v, previous_state)]
@@ -59,8 +59,7 @@ class NPDLT(SPDLT):
                         #switch
                         switch_nodes += [(v, previous_state, next_state)]
                         switch += 1
-
-                    trans_list.append(self.transition(v, previous_state, next_state))
+                        trans_list.append(self.transition(v, previous_state, next_state))
 
             # eseguo gli switch
             for u, p, n in switch_nodes:
@@ -79,6 +78,7 @@ class NPDLT(SPDLT):
                 self.activation_state[u] = c
                 self.active[c].add(u)
                 activation_time[u] = t
+                trans_list.append(self.transition(u, SPDLT.QUIESCENT, c))
 
 
             # active -> inactive
@@ -86,6 +86,8 @@ class NPDLT(SPDLT):
                 self.active[c].remove(u)
                 self.activation_state[u] = SPDLT.INACTIVE
                 activation_time[u] = -1
+                trans_list.append(self.transition(u, c, SPDLT.INACTIVE))
+
 
             # svuoto la lista
             del deactive[:]

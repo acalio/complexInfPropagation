@@ -101,12 +101,11 @@ class SPDLT(DiffusionModel):
                             quiescent_nodes[int(t + q)] = []
                         quiescent_nodes[int(t + q)] += [(v, next_state)]
                         trans_list.append(self.transition(v, previous_state, SPDLT.QUIESCENT))
-                        assert (t + q > t)
                     else:
                         # switch
                         switch += 1
                         switch_nodes += [(v, previous_state, next_state)]
-                    trans_list.append(self.transition(v, previous_state, next_state))
+                        trans_list.append(self.transition(v, previous_state, next_state))
 
             # eseguo gli switch
             for u, p, n in switch_nodes:
