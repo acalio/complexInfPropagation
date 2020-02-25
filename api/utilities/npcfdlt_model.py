@@ -1,6 +1,6 @@
 from api.utilities.spcfdlt_model import SPDLT
 from api.utilities.diffusion_model import FixedProbability, ThresholdFunction, QuiescentFunction
-
+from collections import defaultdict
 
 class NPDLT(SPDLT):
 
@@ -14,7 +14,7 @@ class NPDLT(SPDLT):
         switch_nodes = []
         deactive = []
         transitions = []
-        activation_time = [-1] * len(self.g)
+        activation_time  = defaultdict(int)
         previous_size = 0
         # current_size = len(self.active[-1]) + len(self.active[1])
         t = 0

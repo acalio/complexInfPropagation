@@ -1,7 +1,7 @@
 from api.utilities.diffusion_model import DiffusionModel, ThresholdFunction, QuiescentFunction, FixedProbability
 
 import random as r
-
+from collections import defaultdict
 
 class SPDLT(DiffusionModel):
     QUIESCENT = -1
@@ -57,7 +57,7 @@ class SPDLT(DiffusionModel):
         quiescent_nodes = {}
         switch_nodes, transitions = [], []
         switch = 0
-        activation_time = {x: 0 for x in self.g}
+        activation_time = defaultdict(int)
         t = 0
         while t <= 100:
             transitions += [[]]
